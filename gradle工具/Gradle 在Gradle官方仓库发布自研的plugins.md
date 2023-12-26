@@ -26,7 +26,7 @@
 
 ## 3.配置gradle plugin的发布名称和版本 同样可以修改配置进行更新操作
 
-![image-20231226092442594](C:\Users\86156\AppData\Roaming\Typora\typora-user-images\image-20231226092442594.png)
+![image-20231226092442594](https://s2.loli.net/2023/12/26/5SVdX4jsOa36JCi.png)
 
 
 
@@ -42,7 +42,7 @@
 
 ​	4.vcsUrl x项目的git repository的地址 如果其它人想要contribute你的项目 他可以通过git仓库找到它
 
-![image-20231226093659623](C:\Users\86156\AppData\Roaming\Typora\typora-user-images\image-20231226093659623.png)
+![image-20231226093659623](https://s2.loli.net/2023/12/26/7IDOcHb8RnylrY4.png)
 
 
 
@@ -60,7 +60,7 @@
 
 ​	9.implementionclasses 项目的类
 
-![image-20231226093722025](C:\Users\86156\AppData\Roaming\Typora\typora-user-images\image-20231226093722025.png)
+![image-20231226093722025](https://s2.loli.net/2023/12/26/93RypkEqs6MKOXn.png)
 
 
 
@@ -70,7 +70,7 @@
 
 ## 示例图
 
-![image-20231226093645939](C:\Users\86156\AppData\Roaming\Typora\typora-user-images\image-20231226093645939.png)
+![image-20231226093645939](https://s2.loli.net/2023/12/26/BXA4Vg6ONyEU2mD.png)
 
 
 
@@ -78,4 +78,4 @@
 
 ​	可以在cmd窗口命令行也可以在gradle的任务中找到publishPlugins
 
-![image-20231226094904844](C:\Users\86156\AppData\Roaming\Typora\typora-user-images\image-20231226094904844.png)
+![image-20231226094904844](https://s2.loli.net/2023/12/26/qJ5C7WnAU8MmRhB.png)
