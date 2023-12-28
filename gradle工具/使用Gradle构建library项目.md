@@ -55,3 +55,7 @@
 ![image-20231228094133494](https://s2.loli.net/2023/12/28/XcTyNfIbnqhSjK8.png)
 
 #### 至此 使用Gradle 构建library项目完成
+
+#### 验证:使用Android studio可以选择和打开构建好的项目
+
+![image-20231228094306214](https://s2.loli.net/2023/12/28/czQbkMEioT6VYNs.png)

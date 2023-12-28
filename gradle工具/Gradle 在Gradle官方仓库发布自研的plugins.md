@@ -6,11 +6,7 @@
 
 ​	注册后点击邮箱中的链接激活
 
-
-
-
-
-## 2.创建API KEY
+## 2.创建API KEY并且在Gradle中进行配置
 
 ​	https://plugins.gradle.org/u/nolan?tab=publishing
 
@@ -20,35 +16,40 @@
 
 ​	同样的API KEY可以多次无限次使用到任何想要发布的plugin中
 
+​	![image-20231228105025116](https://s2.loli.net/2023/12/28/IzFxKbyALpf467q.png)
 
+​	
 
+在~user_home\.gradle\gradle.properties下新增
 
+```
+gradle.publish.key=nPujj57ZoiJ6jvLjKK8MIHUXOHUcgr4F
+gradle.publish.secret=4gW2VJH0mmYsYnNGTqYLAQh3R9wZkXEt
+```
+
+![image-20231228105200525](https://s2.loli.net/2023/12/28/VShJHFuGLNo7Ok9.png)
 
 ## 3.配置gradle plugin的发布名称和版本 同样可以修改配置进行更新操作
 
 ![image-20231226092442594](https://s2.loli.net/2023/12/26/5SVdX4jsOa36JCi.png)
 
-
-
-
-
 ## 4.配置gradle的详细信息
 
-​	1.group 对应gradle的owner项 可以填自身或者填其它
+​	需要先启用gradle-java-plugin
 
-​	2.version 版本 需要各版本对应
+![image-20231228105326831](https://s2.loli.net/2023/12/28/FkWvQVrwqKRD9Ld.png)
 
-​	3.website 项目的网站
 
-​	4.vcsUrl x项目的git repository的地址 如果其它人想要contribute你的项目 他可以通过git仓库找到它
+
+1.group 对应gradle的owner项 可以填自身或者填其它
+
+2.version 版本 需要各版本对应
+
+3.website 项目的网站
+
+4.vcsUrl x项目的git repository的地址 如果其它人想要contribute你的项目 他可以通过git仓库找到它
 
 ![image-20231226093659623](https://s2.loli.net/2023/12/26/7IDOcHb8RnylrY4.png)
-
-
-
-
-
-
 
 ​	5.id 在gradle仓库中显示的项目名称
 
