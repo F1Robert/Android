@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="InterfaceTextStyle">
+        <item name="android:textStyle">bold|italic</item> <!-- 设置斜体和粗体 -->
+        <item name="android:textColor">#FFFFFF</item> <!-- 设置字体颜色为白色 -->
+        <item name="android:textSize">14sp</item> <!-- 设置字体大小为 16sp -->
+    </style>
+
+    <style name="InterfaceTitleTextStyle">
+        <item name="android:textStyle">bold|italic</item> <!-- 设置斜体和粗体 -->
+        <item name="android:textColor">#35DCFE</item> <!-- 设置字体颜色为白色 -->
+        <item name="android:textSize">16sp</item> <!-- 设置字体大小为 16sp -->
+    </style>
+
+    <style name="InterfaceNomalTextStyle">
+        <item name="android:textStyle">bold|italic</item> <!-- 设置斜体和粗体 -->
+        <item name="android:textColor">#3FAC73</item> <!-- 设置字体颜色为白色 -->
+        <item name="android:textSize">16sp</item> <!-- 设置字体大小为 16sp -->
+    </style>
+
+    <style name="AppTheme.FullScreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/bg</item> <!-- 设置背景图片 -->
+        <item name="android:windowMinWidthMajor">50%</item> <!-- 设置最小宽度为屏幕宽度的90% -->
+        <item name="android:windowMinWidthMinor">50%</item> <!-- 设置最小宽度为屏幕高度的90% -->
+        <item name="android:windowIsFloating">true</item> <!-- 设置 Dialog 为浮动式 -->
+        <item name="android:windowIsTranslucent">true</item> <!-- 设置 Dialog 为半透明 -->
+    </style>
+</resources>
