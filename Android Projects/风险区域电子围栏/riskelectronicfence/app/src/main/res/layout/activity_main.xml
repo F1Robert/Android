@@ -1,19 +1,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <!-- 底图 -->
-    <ImageView
-        android:id="@+id/background_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:layout_height="match_parent"
+    android:background="@drawable/bg">
 
     <!-- 左边布局 -->
     <LinearLayout
@@ -133,20 +123,21 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/tb"
                 android:gravity="center"
-                android:text="工作模式"
                 android:paddingRight="12dp"
+                android:text="工作模式"
                 android:textAppearance="@style/InterfaceTextStyle" />
         </LinearLayout>
 
         <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
             android:paddingLeft="24dp"
             android:stretchColumns="*">
 
             <!-- 第一行 -->
             <TableRow
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -195,19 +186,24 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
                     android:text="01"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
                     android:text="掘进面监控"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
@@ -242,19 +238,24 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
                     android:text="02"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
                     android:text="掘进面监控"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
@@ -289,19 +290,24 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
                     android:text="03"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
                     android:text="掘进面监控"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
@@ -336,19 +342,24 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
                     android:text="04"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
                     android:text="掘进面监控"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
@@ -383,19 +394,24 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
                     android:text="05"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
                     android:text="掘进面监控"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
@@ -454,8 +470,10 @@
             android:id="@+id/bottom_right_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginBottom="24dp"
             android:layout_weight="1"
-            android:background="@drawable/hw" />
+            android:background="@drawable/hw"
+            />
     </LinearLayout>
 
 
@@ -483,7 +501,7 @@
         android:id="@+id/st"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="48dp"
         android:src="@drawable/st"
         app:layout_constraintEnd_toEndOf="parent"
@@ -492,7 +510,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="128dp"
         android:text="设置"
         android:textColor="@color/white"
@@ -504,7 +522,7 @@
         android:id="@+id/time_h"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="140dp"
         android:text="15:28:36"
         android:textColor="@color/white"
@@ -557,23 +575,53 @@
         android:id="@+id/player1"
         android:layout_width="300dp"
         android:layout_height="130dp"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="112dp"
         android:layout_marginEnd="60dp"
         app:auto_show="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:show_shuffle_button="false"
         app:show_subtitle_button="false"
-        app:show_vr_button="false"
-        app:shutter_background_color="@color/whiteTrans" />
+        app:show_vr_button="false" />
 
     <androidx.media3.ui.PlayerView
         android:id="@+id/player2"
         android:layout_width="300dp"
         android:layout_height="130dp"
-        android:layout_marginTop="85dp"
+        android:layout_marginTop="67dp"
         app:layout_constraintStart_toStartOf="@id/player1"
         app:layout_constraintTop_toBottomOf="@id/player1"
         app:shutter_background_color="@color/whiteTrans" />
+
+    <ImageView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginLeft="200dp"
+        android:layout_marginTop="152dp"
+        android:src="@drawable/dg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/dr"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginLeft="165dp"
+        android:layout_marginTop="170dp"
+        android:src="@drawable/dr"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/dy"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginLeft="150dp"
+        android:layout_marginTop="105dp"
+        android:src="@drawable/dy"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

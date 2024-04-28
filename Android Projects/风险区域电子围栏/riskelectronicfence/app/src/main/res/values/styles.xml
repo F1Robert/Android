@@ -18,7 +18,7 @@
         <item name="android:textSize">16sp</item> <!-- 设置字体大小为 16sp -->
     </style>
 
-    <style name="AppTheme.FullScreen" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.FullScreen" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowFullscreen">true</item>
     </style>
 
@@ -28,5 +28,11 @@
         <item name="android:windowMinWidthMinor">50%</item> <!-- 设置最小宽度为屏幕高度的90% -->
         <item name="android:windowIsFloating">true</item> <!-- 设置 Dialog 为浮动式 -->
         <item name="android:windowIsTranslucent">true</item> <!-- 设置 Dialog 为半透明 -->
+    </style>
+
+    <!-- res/values/styles.xml -->
+    <style name="AppTheme.NoStatusBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
 </resources>

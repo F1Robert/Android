@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="600dp"
+    android:layout_height="400dp"
+    android:background="@drawable/bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/fence_st"
+            android:layout_width="200dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:text="防护围栏设置"
+            android:textAppearance="@style/InterfaceTextStyle"></TextView>
+
+        <TextView
+            android:layout_marginTop="30dp"
+            android:id="@+id/ca_st"
+            android:layout_width="200dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:text="AI摄像头设置"
+            android:textAppearance="@style/InterfaceTextStyle"></TextView>
+
+        <TextView
+            android:id="@+id/udp_test"
+            android:layout_width="200dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="UDP程序调试"
+            android:textAppearance="@style/InterfaceTextStyle"></TextView>
+
+        <TextView
+            android:id="@+id/exit_st"
+            android:layout_width="200dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="退出"
+            android:textAppearance="@style/InterfaceTextStyle"></TextView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

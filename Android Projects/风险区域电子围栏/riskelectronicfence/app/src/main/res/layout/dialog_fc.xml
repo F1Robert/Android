@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="600dp"
+    android:layout_height="450dp"
+    android:background="@drawable/bg"
+    android:orientation="vertical"
+    android:padding="48dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="目标 IP 地址："
+        android:textAppearance="@style/InterfaceTextStyle" />
+
+    <EditText
+        android:id="@+id/ip_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="目标 IP 地址："
+        android:inputType="text"
+        android:textAppearance="@style/InterfaceTextStyle"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="目标端口号："
+        android:textAppearance="@style/InterfaceTextStyle"
+        android:textColorHint="@color/white" />
+
+    <EditText
+        android:id="@+id/port_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="目标端口号:"
+        android:inputType="number"
+        android:textAppearance="@style/InterfaceTextStyle"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="防护围栏距离"
+        android:textAppearance="@style/InterfaceTextStyle"
+        android:textColorHint="@color/white" />
+
+    <EditText
+        android:id="@+id/message_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="防护围栏距离:"
+        android:maxLines="5"
+        android:scrollbars="vertical"
+        android:textAppearance="@style/InterfaceTextStyle"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white" />
+
+    <Button
+        android:id="@+id/send_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/whiteTrans"
+        android:text="确认"
+        android:textAppearance="@style/InterfaceTextStyle" />
+
+    <TextView
+        android:id="@+id/received_data_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="收到的数据"
+        android:textAppearance="@style/InterfaceTextStyle"
+        android:textColorHint="@color/white" />
+
+</LinearLayout>
