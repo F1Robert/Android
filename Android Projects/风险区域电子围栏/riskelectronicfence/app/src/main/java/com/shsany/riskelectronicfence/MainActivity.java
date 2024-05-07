@@ -1,12 +1,15 @@
 package com.shsany.riskelectronicfence;
 
+import static com.shsany.riskelectronicfence.data.SharedPreferencesData.saveSettings;
+import static com.shsany.riskelectronicfence.util.DeviceIdExtractor.isUWBConnect;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +25,18 @@ import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.ui.PlayerView;
 
 import com.bumptech.glide.Glide;
-import com.shsany.riskelectronicfence.ui.STDialog;
+import com.google.gson.Gson;
+import com.shsany.riskelectronicfence.data.AlarmPacket;
+import com.shsany.riskelectronicfence.data.ConfigData;
+import com.shsany.riskelectronicfence.data.SharedPreferencesData;
+import com.shsany.riskelectronicfence.mqtt.MyMqtt;
+import com.shsany.riskelectronicfence.ui.AlarmDialog;
+import com.shsany.riskelectronicfence.ui.CaStDialog;
+import com.shsany.riskelectronicfence.util.DeviceIdExtractor;
+
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -35,31 +49,30 @@ import java.util.Date;
 
 @UnstableApi
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity_Fence";
     public static DatagramSocket socket1;
     public static DatagramSocket socket2;
-
     public static Handler mHandler;
+    public Context mcontext;
+    public AlarmDialog alarmDialog;
 
     public static Handler getHandler() {
         return mHandler;
     }
 
     private TextView dateTextView, dayOfWeekTextView, timeTextView;
-    ImageView imageView;
+    ImageView imageView, isAlarm, isStop;
     ImageView st;
 
     // 设置RTSP流地址
     String rtspUrl = "rtsp://admin:abc12345@192.168.1.99:554/Streaming/Channels/201";
     String rtspUrl2 = "rtsp://admin:abc12345@192.168.1.252/cam/realmonitor?channel=7&subtype=0";
-
     PlayerView playerView;
     PlayerView playerView2;
-    STDialog stDialog;
-
+    CaStDialog caDialog;
     ImageView dr;
     ImageView dy;
+    String[] jjcasArray;
 
     /*
      * 摄像头相关
@@ -69,21 +82,86 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+
     }
 
-    public void initSt() {
-        stDialog = new STDialog(this);
+    //mqtt连接
+    public void initMqtt() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MyMqtt mqtt = new MyMqtt("Pad", callback, false);
+            }
+        }).start();
+    }
+
+    public void initMqtt(String[] args) {
+        if (!isUWBConnect) {
+
+        }
+        if (args[3].equals("")) {
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (args[3].length() < 3) {
+                    Log.e(TAG, "mqtt: 正在使用匿名连接");
+                    MyMqtt mqtt = new MyMqtt("Pad", callback, true, null, null);
+                } else {
+                    Log.e(TAG, "mqtt: 正在使用加密连接");
+                    MyMqtt mqtt = new MyMqtt("Pad", args, callback, false);
+                }
+            }
+        }).start();
+    }
+
+    /*
+     * mqtt消息
+     * */
+    public MqttCallback callback = new MqttCallback() {
+        @Override
+        public void connectionLost(Throwable cause) {
+            isUWBConnect = false;
+            Log.e(TAG, "connectionLost: 连接到mqtt服务器失败，请检查mqtt服务器和pad设置");
+        }
+
+        @Override
+        public void messageArrived(String topic, MqttMessage message) throws Exception {
+            if (topic.equals("UWB/ALARM")) {
+                Log.e(TAG, "messageArrived: 收到mqtt服务器消息" + message.toString());
+                AlarmPacket messagePacket = new Gson().fromJson(String.valueOf(message), AlarmPacket.class);
+                Message message1 = new Message();
+                message1.what = 300;
+                message1.obj = messagePacket;
+                mHandler.sendMessage(message1);
+            }
+        }
+
+        @Override
+        public void deliveryComplete(IMqttDeliveryToken token) {
+            Log.e(TAG, "deliveryComplete: " + token.toString());
+        }
+
+
+    };
+
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void initCa() {
         st.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (stDialog == null) {
-                    stDialog = new STDialog(getApplicationContext());
-                    stDialog.show();
-                } else if (stDialog.isShowing()) {
-                    stDialog.dismiss();
-                    stDialog.show();
+                if (caDialog == null) {
+                    caDialog = new CaStDialog(mcontext);
+                    caDialog.show();
+                } else if (caDialog.isShowing()) {
+                    caDialog.dismiss();
+                    caDialog.show();
                 } else {
-                    stDialog.show();
+                    caDialog.show();
                 }
             }
         });
@@ -91,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void initUI() {
         imageView = findViewById(R.id.gifImageView);
+        isAlarm = findViewById(R.id.alarming);
+        isStop = findViewById(R.id.stop);
         timeTextView = findViewById(R.id.time_h);
         dateTextView = findViewById(R.id.time_y);
         dayOfWeekTextView = findViewById(R.id.time_d);
@@ -98,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
         dr = findViewById(R.id.dr);
         dy = findViewById(R.id.dy);
         Glide.with(this).asGif().load(R.raw.anime).into(imageView);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         playerView = findViewById(R.id.player1);
         playerView2 = findViewById(R.id.player2);
     }
@@ -133,11 +211,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void init() {
         initUI();
-        initSt();
+        initCa();
         initRTSP();
         initHandler();
         updateDate();
-        initSocket1(18000);
+        initMqtt();
+        mcontext = this;
+        initAlarmDialog();
+        jjcasArray = getResources().getStringArray(R.array.jjcas);
+    }
+
+    public void checkIds(String id) {
+        for (String s : jjcasArray) {
+            if (s.equals(id)) {
+
+            } else {
+
+            }
+        }
     }
 
     public void initHandler() {
@@ -167,10 +258,31 @@ public class MainActivity extends AppCompatActivity {
                     int[] dec = (int[]) msg.obj;
                     Toast.makeText(getApplicationContext(), "Success!当前距离为" + dec[2], Toast.LENGTH_SHORT).show();
                 } else if (msg.what == 200) {
-                    initRTSP((String[]) msg.obj);
-                    Toast.makeText(getApplicationContext(), "摄像头正在加载，请稍后", Toast.LENGTH_SHORT).show();
+                    initSt((String[]) msg.obj);
+                } else if (msg.what == 300) {
+                    AlarmPacket alarmPacket = (AlarmPacket) msg.obj;
+                    if (alarmPacket.getALAMRIN() == 1) {
+                        isAlarm.setImageResource(R.drawable.rd);
+                        if (alarmDialog != null) {
+                            alarmDialog.dismiss();
+                            alarmDialog = new AlarmDialog(mcontext);
+                            alarmDialog.show();
+                        } else {
+                            alarmDialog = new AlarmDialog(mcontext);
+                            alarmDialog.show();
+                        }
+                    } else {
+                        isAlarm.setImageResource(R.drawable.gr);
+                    }
+
+                    if (alarmPacket.getALARMR() == 1) {
+                        isStop.setImageResource(R.drawable.rd);
+                    } else {
+                        isStop.setImageResource(R.drawable.gr);
+                    }
                 }
-                stDialog.dismiss();
+                if (caDialog != null)
+                    caDialog.dismiss();
             }
         };
 
@@ -184,7 +296,74 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void initAlarmDialog() {
+        alarmDialog = new AlarmDialog(mcontext);
+    }
+
+    public void initSt(String[] args) {
+        initConfigData(args);
+        initRTSP(args);
+        initMqtt(args);
+        SharedPreferencesData.Settings settings = new SharedPreferencesData.Settings(args[9],
+                "",
+                args[0],
+                args[7],
+                args[8], DeviceIdExtractor.extractDeviceIds(args[6]), args[2], args[3], args[4]);
+        saveSettings(mcontext, settings);
+    }
+
+    public void initConfigData(String[] args) {
+        ConfigData configData = new ConfigData(args[9], "", args[1], args[7], args[8], initBmd(args[6]));
+        Log.e(TAG, "initConfigData: " + configData.toJson());
+        Message message = new Message();
+        message.what = 100;
+        message.obj = configData.toJson();
+        MyMqtt.mqHandler.sendMessage(message);
+    }
+
+    public void initHmd(String[] args) {
+        if (args[5].equals("")) {
+
+        } else {
+
+        }
+    }
+
+    /*
+     * 白名单处理
+     * */
+    public String[] initBmd(String arg) {
+        if (arg.equals("")) {
+            return new String[]{""};
+        } else {
+            /*
+             * 解析白名单
+             * */
+            return DeviceIdExtractor.extractDeviceIds(arg);
+        }
+    }
+
+
+    public void initHq(String[] args) {
+        if (args[7].equals("")) {
+
+        } else {
+
+        }
+    }
+
+    public void initRq(String[] args) {
+        if (args[8].equals("")) {
+
+        } else {
+
+        }
+    }
+
     public void initRTSP(String[] args) {
+        if (args[0].equals("")) {
+            return;
+        }
         Log.e(TAG, "initRTSP: args: " + Arrays.toString(args));
         MediaSource mediaSource = new RtspMediaSource.Factory().createMediaSource(MediaItem.fromUri(args[0]));
         ExoPlayer player = new ExoPlayer.Builder(this).build();
@@ -218,15 +397,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stDialog.dismiss();
-        stDialog = null;
+        if (caDialog != null) {
+            caDialog.dismiss();
+            caDialog = null;
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        stDialog.dismiss();
-        stDialog = null;
+        if (caDialog != null) {
+            caDialog.dismiss();
+            caDialog = null;
+        }
     }
 
     public void initSocket1(int port) {
