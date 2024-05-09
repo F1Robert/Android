@@ -56,11 +56,13 @@ public class MainActivity extends AppCompatActivity {
     public Context mcontext;
     public AlarmDialog alarmDialog;
 
+    public SharedPreferencesData.Settings settings;
+
     public static Handler getHandler() {
         return mHandler;
     }
 
-    private TextView dateTextView, dayOfWeekTextView, timeTextView;
+    private TextView dateTextView, dayOfWeekTextView, timeTextView, jjT1, jjT2, jjT3, jjT4, jjT5, jr1, jr2, jr3, js1, js2, js3;
     ImageView imageView, isAlarm, isStop;
     ImageView st;
 
@@ -73,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
     ImageView dr;
     ImageView dy;
     String[] jjcasArray;
+
+    TextView[] jtArray;
+    TextView[] jrArray;
+    TextView[] jsArray;
 
     /*
      * 摄像头相关
@@ -174,6 +180,18 @@ public class MainActivity extends AppCompatActivity {
         timeTextView = findViewById(R.id.time_h);
         dateTextView = findViewById(R.id.time_y);
         dayOfWeekTextView = findViewById(R.id.time_d);
+        jjT1 = findViewById(R.id.j_ca_id0);
+        jjT2 = findViewById(R.id.j_ca_id1);
+        jjT3 = findViewById(R.id.j_ca_id2);
+        jjT4 = findViewById(R.id.j_ca_id3);
+        jjT5 = findViewById(R.id.j_ca_id4);
+        jr1 = findViewById(R.id.j_rang_0);
+        jr2 = findViewById(R.id.j_rang_1);
+        jr3 = findViewById(R.id.j_rang_2);
+        js1 = findViewById(R.id.j_status_0);
+        js2 = findViewById(R.id.j_status_1);
+        js3 = findViewById(R.id.j_status_2);
+
         st = findViewById(R.id.st);
         dr = findViewById(R.id.dr);
         dy = findViewById(R.id.dy);
@@ -218,7 +236,15 @@ public class MainActivity extends AppCompatActivity {
         initMqtt();
         mcontext = this;
         initAlarmDialog();
+        initSettings();
         jjcasArray = getResources().getStringArray(R.array.jjcas);
+        jtArray = new TextView[]{jjT1, jjT2, jjT3, jjT4, jjT5};
+        jrArray = new TextView[]{jr1, jr2, jr3};
+        jsArray = new TextView[]{js1, js2, js3};
+    }
+
+    public void initSettings() {
+        settings = SharedPreferencesData.loadSettings(mcontext);
     }
 
     public void checkIds(String id) {
@@ -261,25 +287,7 @@ public class MainActivity extends AppCompatActivity {
                     initSt((String[]) msg.obj);
                 } else if (msg.what == 300) {
                     AlarmPacket alarmPacket = (AlarmPacket) msg.obj;
-                    if (alarmPacket.getALAMRIN() == 1) {
-                        isAlarm.setImageResource(R.drawable.rd);
-                        if (alarmDialog != null) {
-                            alarmDialog.dismiss();
-                            alarmDialog = new AlarmDialog(mcontext);
-                            alarmDialog.show();
-                        } else {
-                            alarmDialog = new AlarmDialog(mcontext);
-                            alarmDialog.show();
-                        }
-                    } else {
-                        isAlarm.setImageResource(R.drawable.gr);
-                    }
-
-                    if (alarmPacket.getALARMR() == 1) {
-                        isStop.setImageResource(R.drawable.rd);
-                    } else {
-                        isStop.setImageResource(R.drawable.gr);
-                    }
+                    analysisUwbAlarm(alarmPacket);
                 }
                 if (caDialog != null)
                     caDialog.dismiss();
@@ -296,8 +304,96 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void analysisUwbAlarm(AlarmPacket alarmPacket) {
+        if (alarmPacket.getALAMRIN() == 1) {
+            isAlarm.setImageResource(R.drawable.rd);
+            if (alarmDialog != null) {
+                alarmDialog.dismiss();
+                alarmDialog = new AlarmDialog(mcontext, alarmPacket.getTID(), alarmPacket.getRANGE());
+                alarmDialog.show();
+            } else {
+                alarmDialog = new AlarmDialog(mcontext, alarmPacket.getTID(), alarmPacket.getRANGE());
+                alarmDialog.show();
+            }
+        } else {
+            isAlarm.setImageResource(R.drawable.gr);
+        }
+
+        if (alarmPacket.getALARMR() == 1) {
+            isStop.setImageResource(R.drawable.rd);
+        } else {
+            isStop.setImageResource(R.drawable.gr);
+        }
+        /*
+         * 更新距离
+         * */
+        analysisJr(String.valueOf(alarmPacket.getTID()), alarmPacket.getRANGE());
+        /*
+         * 如果距离小于设定的报警距离则显示报警图标
+         * */
+        if (analysisDr(alarmPacket.getRANGE())) {
+
+        } else {
+            analysisDy(alarmPacket.getRANGE());
+        }
+    }
+
+    public void analysisJr(String id, int range) {
+        for (int i = 0; i < jtArray.length; i++) {
+            if (jtArray[i].getText().equals(id)) {
+                if (i == 0) {
+                    jrArray[0].setText(range / 1000 + "米");
+                }
+                if (i == 1) {
+                    jrArray[1].setText(range / 1000 + "米");
+                }
+                if (i == 2) {
+                    jrArray[2].setText(range / 1000 + "米");
+                }
+                return;
+            }
+        }
+    }
+
+    public boolean analysisDr(int range) {
+        if (range / 1000 < Float.parseFloat(settings.getRed_r())) {
+            dr.setVisibility(View.VISIBLE);
+            return true;
+        } else {
+            dr.setVisibility(View.INVISIBLE);
+            return false;
+        }
+    }
+
+    public boolean analysisDy(int range) {
+        if (range / 1000 < Float.parseFloat(settings.getYellow_r())) {
+            dy.setVisibility(View.VISIBLE);
+            return true;
+        } else {
+            dy.setVisibility(View.INVISIBLE);
+            return false;
+        }
+    }
+
+    public void analysisJs(String id, String range) {
+        int r = Integer.parseInt(range) / 100;
+        for (int i = 0; i < jtArray.length; i++) {
+            if (jtArray[i].getText().equals(id)) {
+                if (i == 0) {
+                    jsArray[0].setText(r + "米");
+                }
+                if (i == 1) {
+                    jsArray[1].setText(r + "米");
+                }
+                if (i == 2) {
+                    jsArray[2].setText(r + "米");
+                }
+            }
+        }
+    }
+
     public void initAlarmDialog() {
-        alarmDialog = new AlarmDialog(mcontext);
+        alarmDialog = new AlarmDialog(mcontext, -1, -1);
     }
 
     public void initSt(String[] args) {

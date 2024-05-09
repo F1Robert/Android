@@ -30,7 +30,8 @@ public class MyMqtt {
     private String id;
     private static MyMqtt instance; // = new MyMqtt();
     private MqttTopic mqttTopic;
-    private String uwbTopic = "UWB/SET";
+    private String uwbStTopic = "UWB/SET";
+    private String uwbAlarmTopic = "UWB/ALARM";
     private String aiTopic = "UWB/ALARM";
     private MqttMessage message;
     public static Handler mqHandler;
@@ -66,7 +67,8 @@ public class MyMqtt {
                 client.setCallback(callback);
             }
             connect(options);
-            client.subscribe(uwbTopic);
+            client.subscribe(uwbStTopic);
+            client.subscribe(uwbAlarmTopic);
         } catch (MqttException e) {
             // TODO 自动生成的 catch 块
             e.printStackTrace();
@@ -118,7 +120,8 @@ public class MyMqtt {
                 client.setCallback(callback);
             }
             connect(options);
-            subscribeTopic(uwbTopic, 1);
+            subscribeTopic(uwbStTopic, 1);
+            subscribeTopic(uwbAlarmTopic, 1);
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -158,7 +161,8 @@ public class MyMqtt {
                 client.setCallback(callback);
             }
             connect(options);
-            subscribeTopic(uwbTopic, 1);
+            subscribeTopic(uwbStTopic, 1);
+            subscribeTopic(uwbAlarmTopic, 1);
         } catch (MqttException e) {
             // TODO 自动生成的 catch 块
             e.printStackTrace();
@@ -166,7 +170,7 @@ public class MyMqtt {
     }
 
     public void sendUwbMessage(String msg) {
-        sendUwbMessage(uwbTopic, msg);
+        sendUwbMessage(uwbStTopic, msg);
     }
 
     public void sendAiMessage(String msg) {

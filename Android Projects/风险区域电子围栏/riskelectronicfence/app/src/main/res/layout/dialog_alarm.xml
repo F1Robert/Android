@@ -6,7 +6,8 @@
     android:layout_gravity="center"
     android:background="@drawable/bg"
     android:gravity="center"
-    android:padding="100dp">
+    android:paddingHorizontal="60dp"
+    android:paddingVertical="30dp">
 
     <TextView
         android:id="@+id/countdown"
@@ -43,12 +44,12 @@
 
         <TextView
 
-            android:padding="4dp"
             android:id="@+id/confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:gravity="center"
+            android:padding="4dp"
             android:text="确认"
             android:textAppearance="@style/InterfaceTextStyleSmall"
             android:textSize="18sp"
@@ -57,12 +58,12 @@
             app:layout_constraintTop_toBottomOf="@+id/countdown_text_view" />
 
         <TextView
-            android:padding="4dp"
             android:id="@+id/cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:gravity="center"
+            android:padding="4dp"
             android:text="取消"
             android:textAppearance="@style/InterfaceTextStyleSmall"
             android:textSize="18sp"

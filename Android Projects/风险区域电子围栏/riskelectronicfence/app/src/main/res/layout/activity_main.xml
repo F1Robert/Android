@@ -209,14 +209,15 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
-                    android:id="@+id/j_ca_id1"
+                    android:id="@+id/j_ca_id0"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S51001"
+                    android:text="501001"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_rang_0"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -224,6 +225,7 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_status_0"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -266,10 +268,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S51002"
+                    android:text="501002"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_rang_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -277,6 +280,7 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_status_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -319,10 +323,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S51003"
+                    android:text="501003"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_rang_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -330,6 +335,7 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_status_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -372,7 +378,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S51004"
+                    android:text="501004"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
@@ -425,7 +431,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S51005"
+                    android:text="501005"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
