@@ -30,7 +30,7 @@ public class SharedPreferencesData {
         Type type = new TypeToken<Settings>() {
         }.getType();
         if (json.equals("")) {
-            Settings settings = new Settings("128.1.30.21", "", "128.1.30.22", "6.4", "3.2", new String[]{"50036", "50037", "50038"}, "tcp://192.168.0.100:1883", "admin", "123456");
+            Settings settings = new Settings("tcp://128.1.30.21:1883", "", "128.1.30.22", "128.1.30.25","6.4", "3.2", new String[]{"50036", "50037", "50038"}, "tcp://192.168.0.100:1883", "admin", "123456");
             json = gson.toJson(settings);
             saveSettings(context, settings);
         }
@@ -42,6 +42,7 @@ public class SharedPreferencesData {
         private String AI_setveri_ip;
         private String BSG_ip;
         private String camare_ip;
+        private String ai_camare_ip;
         private String yellow_r;
         private String red_r;
         private String[] White_list;
@@ -52,16 +53,25 @@ public class SharedPreferencesData {
         // 添加构造函数和 getter/setter 方法
         // ...
 
-        public Settings(String AI_setveri_ip, String BSG_ip, String camare_ip, String yellow_r, String red_r, String[] white_list, String uwbMqtt, String uwbUserName, String uwbPwd) {
+        public Settings(String AI_setveri_ip, String BSG_ip, String camare_ip, String ai_camare_ip ,String yellow_r, String red_r, String[] white_list, String uwbMqtt, String uwbUserName, String uwbPwd) {
             this.AI_setveri_ip = AI_setveri_ip;
             this.BSG_ip = BSG_ip;
+            this.ai_camare_ip = ai_camare_ip;
             this.camare_ip = camare_ip;
             this.yellow_r = yellow_r;
             this.red_r = red_r;
-            White_list = white_list;
+            this.White_list = white_list;
             this.uwbMqtt = uwbMqtt;
             this.uwbUserName = uwbUserName;
             this.uwbPwd = uwbPwd;
+        }
+
+        public String getAi_camare_ip() {
+            return ai_camare_ip;
+        }
+
+        public void setAi_camare_ip(String ai_camare_ip) {
+            this.ai_camare_ip = ai_camare_ip;
         }
 
         public String getAI_setveri_ip() {

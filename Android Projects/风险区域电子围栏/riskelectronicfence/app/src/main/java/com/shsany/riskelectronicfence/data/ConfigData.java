@@ -3,24 +3,54 @@ package com.shsany.riskelectronicfence.data;
 import com.google.gson.Gson;
 
 /*
-* UWB端设置下发数据
-* */
+ * UWB端设置下发数据
+ * */
 public class ConfigData {
-    private String AI_setveri_ip;
-    private String BSG_ip;
-    private String camare_ip;
-    private String yellow_r;
-    private String red_r;
-    private String[] White_list;
+    /*
+    0表示PAD设置
+    1表示设备注册
+    2表示AI报警
+    3表示UWB报警
+    */
+    private int FUNC = 0;
+    private String AIIP;
+    private String ALMIP;
+    private String CIP;
+    private String ALARMY;
+    private String ALARMR;
+    private String[] WLIST;
+    private int WKMODE;
 
     // 构造函数
-    public ConfigData(String AI_setveri_ip, String BSG_ip, String camare_ip, String yellow_r, String red_r, String[] White_list) {
-        this.AI_setveri_ip = AI_setveri_ip;
-        this.BSG_ip = BSG_ip;
-        this.camare_ip = camare_ip;
-        this.yellow_r = yellow_r;
-        this.red_r = red_r;
-        this.White_list = White_list;
+    public ConfigData(String AIIP, String ALMIP, String CIP, String ALARMY, String ALARMR, String[] WLIST) {
+        this.FUNC = 0;
+        this.AIIP = AIIP;
+        this.ALMIP = ALMIP;
+        this.CIP = CIP;
+        this.ALARMY = ALARMY;
+        this.ALARMR = ALARMR;
+        this.WLIST = WLIST;
+    }
+
+    public ConfigData() {
+        this.FUNC = 0;
+        this.AIIP = "128.1.30.21";
+        this.ALMIP = "128.1.30.23";
+        this.CIP = "128.1.30.22";
+        this.ALARMY = "3.2";
+        this.ALARMR = "6.4";
+        this.WLIST = new String[]{"50036", "50037", "50038"};
+    }
+
+    public ConfigData(int wkMode) {
+        this.FUNC = 0;
+        this.AIIP = "128.1.30.21";
+        this.ALMIP = "128.1.30.23";
+        this.CIP = "128.1.30.22";
+        this.ALARMY = "3.2";
+        this.ALARMR = "6.4";
+        this.WLIST = new String[]{"50036", "50037", "50038"};
+        this.WKMODE = wkMode;
     }
 
     // 将对象转换为 JSON 字符串

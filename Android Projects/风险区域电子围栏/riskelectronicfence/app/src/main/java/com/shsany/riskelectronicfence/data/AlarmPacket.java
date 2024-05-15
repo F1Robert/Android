@@ -4,23 +4,27 @@ package com.shsany.riskelectronicfence.data;
  * UWB端报警上传数据
  * */
 public class AlarmPacket {
+    /*
+    0表示PAD设置
+    1表示设备注册
+    2表示AI报警
+    3表示UWB报警
+    */
+    private int FUNC;
     private int AID;
     private int TID;
     private int RANGE;
-    private int ALAMRIN;
+    private int ALARMIN;
     private int ALARMY;
     private int ALARMR;
-
-    public AlarmPacket(int AID, int TID, int RANGE, int ALAMRIN, int ALARMY, int ALARMR) {
-        this.AID = AID;
-        this.TID = TID;
-        this.RANGE = RANGE;
-        this.ALAMRIN = ALAMRIN;
-        this.ALARMY = ALARMY;
-        this.ALARMR = ALARMR;
+    // 添加getter和setter方法
+    public int getFUNC() {
+        return FUNC;
     }
 
-    // 添加getter和setter方法
+    public void setFUNC(int FUNC) {
+        this.FUNC = FUNC;
+    }
 
     public int getAID() {
         return AID;
@@ -46,12 +50,12 @@ public class AlarmPacket {
         this.RANGE = RANGE;
     }
 
-    public int getALAMRIN() {
-        return ALAMRIN;
+    public int getALARMIN() {
+        return ALARMIN;
     }
 
-    public void setALAMRIN(int ALAMRIN) {
-        this.ALAMRIN = ALAMRIN;
+    public void setALARMIN(int ALARMIN) {
+        this.ALARMIN = ALARMIN;
     }
 
     public int getALARMY() {
@@ -72,11 +76,12 @@ public class AlarmPacket {
 
     @Override
     public String toString() {
-        return "MessagePacket{" +
-                "AID=" + AID +
+        return "AlarmPacket{" +
+                "FUNC=" + FUNC +
+                ", AID=" + AID +
                 ", TID=" + TID +
                 ", RANGE=" + RANGE +
-                ", ALAMRIN=" + ALAMRIN +
+                ", ALARMIN=" + ALARMIN +
                 ", ALARMY=" + ALARMY +
                 ", ALARMR=" + ALARMR +
                 '}';

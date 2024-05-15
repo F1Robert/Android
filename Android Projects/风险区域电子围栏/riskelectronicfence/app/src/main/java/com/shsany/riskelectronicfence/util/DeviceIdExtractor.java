@@ -4,9 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DeviceIdExtractor {
-    public static boolean isUWBConnect = true;
-    public static boolean isAIConnect = true;
-
     public static String[] extractDeviceIds(String input) {
         // 使用正则表达式匹配逗号、中文逗号、英文逗号、空格
         Pattern pattern = Pattern.compile("[,，\\s]");

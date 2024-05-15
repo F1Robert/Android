@@ -3,11 +3,16 @@ package com.shsany.riskelectronicfence.ui;
 import static com.shsany.riskelectronicfence.data.SharedPreferencesData.loadSettings;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -87,6 +92,7 @@ public class CaStDialog extends Dialog {
         bmd.setText(bmdS);
         ai_fwq.setText(settings.getAI_setveri_ip());
         ai.setText(settings.getCamare_ip());
+        rcx.setText(settings.getCamare_ip());
         rq.setText(settings.getRed_r());
         hq.setText(settings.getYellow_r());
     }
@@ -105,6 +111,32 @@ public class CaStDialog extends Dialog {
             @OptIn(markerClass = UnstableApi.class)
             @Override
             public void onClick(View v) {
+                // 显示加载动画
+                ProgressDialog progressDialog = new ProgressDialog(getContext(), R.style.InterfaceTitleTextStyleLoading);
+                progressDialog.setMessage("设置保存中..."); // 设置消息
+                progressDialog.setCancelable(true); // 设置是否可以通过返回键取消对话框
+                progressDialog.show(); // 显示对话框
+
+                // 获取对话框的窗口
+                Window window = progressDialog.getWindow();
+                if (window != null) {
+                    // 设置对话框的大小
+                    WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                    layoutParams.copyFrom(window.getAttributes());
+                    layoutParams.width = 400; // 设置宽度为400像素
+                    layoutParams.height = 100; // 设置高度为300像素
+                    layoutParams.gravity = Gravity.CENTER; // 设置居中显示
+                    window.setAttributes(layoutParams);
+                }
+
+                // 延迟一秒后关闭加载动画
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 1000);
+
                 dismiss();
                 Message msg = new Message();
                 String[] args = new String[]{

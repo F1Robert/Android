@@ -19,23 +19,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/device_id_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="mqtt服务器地址:"
+                android:text="AI服务器地址:"
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/mqtt_fwq"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
@@ -48,17 +49,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ai服务器地址:"
+                android:text="AI服务器地址:"
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/ai_fwq"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
@@ -66,7 +67,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/base_station_id_label"
@@ -76,13 +78,13 @@
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/mqtt_uname"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
@@ -90,7 +92,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -99,13 +102,13 @@
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/mqtt_pwd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
@@ -123,13 +126,13 @@
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/alarm_ip_edittext"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
@@ -147,13 +150,13 @@
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/infrared_camera_ip_edittext"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
@@ -170,13 +173,13 @@
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/hmd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
@@ -193,13 +196,13 @@
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/bmd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
@@ -218,13 +221,13 @@
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/pad_ip_edittext"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
@@ -241,13 +244,13 @@
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/yellow_r"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
@@ -264,13 +267,13 @@
                 android:textAppearance="@style/InterfaceTextStyleSmall" />
 
             <EditText
-                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:id="@+id/red_r"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/grey"
+                android:textAppearance="@style/InterfaceTextStyleSmall"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>

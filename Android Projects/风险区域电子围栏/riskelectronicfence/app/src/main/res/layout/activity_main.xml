@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
-                    android:text="接口1"
+                    android:text="输入1"
                     android:textAppearance="@style/InterfaceTextStyle"
                     android:textColor="@color/white" />
 
@@ -65,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
-                    android:text="接口2"
+                    android:text="输入2"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <ImageView
@@ -120,6 +120,7 @@
 
             <!-- 第五列 -->
             <TextView
+                android:id="@+id/wkMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/tb"
@@ -213,7 +214,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="501001"
+                    android:text="50396"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView

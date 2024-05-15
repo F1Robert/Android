@@ -1,16 +1,23 @@
 package com.shsany.riskelectronicfence;
 
 import static com.shsany.riskelectronicfence.data.SharedPreferencesData.saveSettings;
-import static com.shsany.riskelectronicfence.util.DeviceIdExtractor.isUWBConnect;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +33,17 @@ import androidx.media3.ui.PlayerView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.shsany.riskelectronicfence.data.AiAlarm;
 import com.shsany.riskelectronicfence.data.AlarmPacket;
 import com.shsany.riskelectronicfence.data.ConfigData;
 import com.shsany.riskelectronicfence.data.SharedPreferencesData;
 import com.shsany.riskelectronicfence.mqtt.MyMqtt;
+import com.shsany.riskelectronicfence.observa.UWBConnectObservable;
+import com.shsany.riskelectronicfence.observa.UWBConnectObserver;
 import com.shsany.riskelectronicfence.ui.AlarmDialog;
 import com.shsany.riskelectronicfence.ui.CaStDialog;
+import com.shsany.riskelectronicfence.util.AudioPlayer;
 import com.shsany.riskelectronicfence.util.DeviceIdExtractor;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -43,104 +55,183 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @UnstableApi
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements UWBConnectObserver {
     private static final String TAG = "MainActivity_Fence";
-    public static DatagramSocket socket1;
-    public static DatagramSocket socket2;
+    public static DatagramSocket socket1, socket2;
     public static Handler mHandler;
     public Context mcontext;
     public AlarmDialog alarmDialog;
-
+    public AudioPlayer audioPlayer;
     public SharedPreferencesData.Settings settings;
-
-    public static Handler getHandler() {
-        return mHandler;
-    }
-
-    private TextView dateTextView, dayOfWeekTextView, timeTextView, jjT1, jjT2, jjT3, jjT4, jjT5, jr1, jr2, jr3, js1, js2, js3;
-    ImageView imageView, isAlarm, isStop;
-    ImageView st;
+    //缩写说明 jj表示掘进机 jjT表示卡号一栏 jr表示掘进机距离一栏 js表示掘进机状态一栏
+    public TextView dateTextView, dayOfWeekTextView, timeTextView, jjT1, jjT2, jjT3, jjT4, jjT5, jr1, jr2, jr3, js1, js2, js3, wkMode;
+    //缩写说明 imageView表示雷达扫描图 isAlarm表示报警的图标 isStop表示停机的图标 dr表示dot red:红点 dy表示dot yellow:黄点 st表示setting 设置
+    public ImageView imageView, isAlarm, isStop, dr, dy, st;
 
     // 设置RTSP流地址
-    String rtspUrl = "rtsp://admin:abc12345@192.168.1.99:554/Streaming/Channels/201";
-    String rtspUrl2 = "rtsp://admin:abc12345@192.168.1.252/cam/realmonitor?channel=7&subtype=0";
-    PlayerView playerView;
-    PlayerView playerView2;
-    CaStDialog caDialog;
-    ImageView dr;
-    ImageView dy;
-    String[] jjcasArray;
+    public String rtspUrl = "rtsp://admin:abc12345@192.168.1.99:554/Streaming/Channels/201";
+    public String rtspUrl2 = "rtsp://admin:abc12345@192.168.1.252/cam/realmonitor?channel=7&subtype=0";
+    //rtsp流摄像头播放器
+    public PlayerView playerView, playerView2;
+    public CaStDialog caDialog;
+    //jtArray掘进机卡号数组 jrArray掘进机距离数组 jsArray掘进机状态数组
+    public TextView[] jtArray, jrArray, jsArray;
+    public Animation blinkAnimation;
 
-    TextView[] jtArray;
-    TextView[] jrArray;
-    TextView[] jsArray;
+    private PopupWindow popupWindow;
+    private List<String> options;
 
-    /*
-     * 摄像头相关
-     * */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-
     }
 
-    //mqtt连接
+    //初始化自动执行mqtt连接
     public void initMqtt() {
+        UWBConnectObservable.addObserver(this);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                MyMqtt mqtt = new MyMqtt("Pad", callback, false);
+                MyMqtt mqtt = new MyMqtt("Pad", callback, false, settings.getAI_setveri_ip());
             }
         }).start();
     }
 
-    public void initMqtt(String[] args) {
-        if (!isUWBConnect) {
+    public void initWkMode() {
+        // 初始化选项列表
+        options = new ArrayList<>();
+        options.add("正常模式");
+        options.add("检修模式");
+        wkMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupWindow();
+            }
+        });
+    }
 
+    private void showPopupWindow() {
+        if (popupWindow == null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, options);
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setBackgroundResource(R.drawable.tb);
+
+            for (int i = 0; i < adapter.getCount(); i++) {
+                TextView textView = new TextView(this);
+                textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                textView.setText(adapter.getItem(i));
+                textView.setGravity(Gravity.CENTER);
+                textView.setTextAppearance(R.style.InterfaceTextStyle); // 设置字体样式
+                textView.setPadding(0, 12, 12, 12);
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        handleOptionClick(((TextView) v).getText().toString());
+                        popupWindow.dismiss();
+                    }
+                });
+                layout.addView(textView);
+            }
+
+            popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+            popupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
+            popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    // 可以在弹窗消失时执行一些操作
+                }
+            });
         }
-        if (args[3].equals("")) {
-            return;
+
+        popupWindow.showAsDropDown(wkMode);
+    }
+
+    private void handleOptionClick(String option) {
+        if (option.equals("检修模式")) {
+            ConfigData configData = new ConfigData(1);
+            Log.e(TAG, "initConfigData: " + configData.toJson());
+            Message message = new Message();
+            message.what = 100;
+            message.obj = configData.toJson();
+            MyMqtt.mqHandler.sendMessage(message);
+            // 在这里处理检修模式的点击事件
+            wkMode.setText("检修模式");
+            Toast.makeText(this, "检修模式", Toast.LENGTH_SHORT).show();
+        } else {
+            wkMode.setText("正常模式");
+            Toast.makeText(this, "正常模式", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void initTimerMqtt() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (args[3].length() < 3) {
-                    Log.e(TAG, "mqtt: 正在使用匿名连接");
-                    MyMqtt mqtt = new MyMqtt("Pad", callback, true, null, null);
-                } else {
-                    Log.e(TAG, "mqtt: 正在使用加密连接");
-                    MyMqtt mqtt = new MyMqtt("Pad", args, callback, false);
+                while (true) {
+                    try {
+//                        Thread.sleep(5000); // 休眠5秒钟
+                        ConfigData configData = new ConfigData();
+                        Log.e(TAG, "initConfigData: " + configData.toJson());
+                        Message message = new Message();
+                        message.what = 100;
+                        message.obj = configData.toJson();
+                        MyMqtt.mqHandler.sendMessage(message);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }).start();
     }
 
-    /*
-     * mqtt消息
-     * */
+    //点击设置之后再执行一次mqtt连接
+    public void initMqtt(String[] args) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MyMqtt mqtt = new MyMqtt("Pad", args, callback, false);
+            }
+        }).start();
+    }
+
+    //mqtt消息
     public MqttCallback callback = new MqttCallback() {
         @Override
         public void connectionLost(Throwable cause) {
-            isUWBConnect = false;
             Log.e(TAG, "connectionLost: 连接到mqtt服务器失败，请检查mqtt服务器和pad设置");
         }
 
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
             if (topic.equals("UWB/ALARM")) {
+                // 解析 JSON 数据中的 FUNC 值
+                Gson gson = new Gson();
+                JsonObject jsonObject = gson.fromJson(String.valueOf(message), JsonObject.class);
+                int func = jsonObject.get("FUNC").getAsInt();
+                if (func == 4) {
+                    AiAlarm aiAlarm = new Gson().fromJson(String.valueOf(message), AiAlarm.class);
+                    Message message1 = new Message();
+                    message1.what = 300;
+                    message1.obj = aiAlarm;
+                    mHandler.sendMessage(message1);
+                } else {
+                    AlarmPacket messagePacket = new Gson().fromJson(String.valueOf(message), AlarmPacket.class);
+                    Message message1 = new Message();
+                    message1.what = 300;
+                    message1.obj = messagePacket;
+                    mHandler.sendMessage(message1);
+                }
                 Log.e(TAG, "messageArrived: 收到mqtt服务器消息" + message.toString());
-                AlarmPacket messagePacket = new Gson().fromJson(String.valueOf(message), AlarmPacket.class);
-                Message message1 = new Message();
-                message1.what = 300;
-                message1.obj = messagePacket;
-                mHandler.sendMessage(message1);
             }
         }
 
@@ -148,13 +239,7 @@ public class MainActivity extends AppCompatActivity {
         public void deliveryComplete(IMqttDeliveryToken token) {
             Log.e(TAG, "deliveryComplete: " + token.toString());
         }
-
-
     };
-
-    public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
 
     public void initCa() {
         st.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +258,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /*
+     * 初始化UI组件
+     * */
     public void initUI() {
         imageView = findViewById(R.id.gifImageView);
         isAlarm = findViewById(R.id.alarming);
@@ -191,10 +279,11 @@ public class MainActivity extends AppCompatActivity {
         js1 = findViewById(R.id.j_status_0);
         js2 = findViewById(R.id.j_status_1);
         js3 = findViewById(R.id.j_status_2);
-
+        wkMode = findViewById(R.id.wkMode);
         st = findViewById(R.id.st);
         dr = findViewById(R.id.dr);
         dy = findViewById(R.id.dy);
+        //加载雷达扫描动画
         Glide.with(this).asGif().load(R.raw.anime).into(imageView);
         playerView = findViewById(R.id.player1);
         playerView2 = findViewById(R.id.player2);
@@ -228,16 +317,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void init() {
+        mcontext = this;
+        initSettings();
         initUI();
         initCa();
-        initRTSP();
         initHandler();
         updateDate();
-        initMqtt();
-        mcontext = this;
+        updateTimeSec();
         initAlarmDialog();
-        initSettings();
-        jjcasArray = getResources().getStringArray(R.array.jjcas);
+        initAudioPlayer();
+        initArrays();
+        initWkMode();
+        initRTSP();
+        initMqtt();
+    }
+
+    public void initArrays() {
+        blinkAnimation = AnimationUtils.loadAnimation(this, R.anim.blink_animation);
         jtArray = new TextView[]{jjT1, jjT2, jjT3, jjT4, jjT5};
         jrArray = new TextView[]{jr1, jr2, jr3};
         jsArray = new TextView[]{js1, js2, js3};
@@ -247,53 +343,38 @@ public class MainActivity extends AppCompatActivity {
         settings = SharedPreferencesData.loadSettings(mcontext);
     }
 
-    public void checkIds(String id) {
-        for (String s : jjcasArray) {
-            if (s.equals(id)) {
-
-            } else {
-
-            }
-        }
+    public void initAudioPlayer() {
+        audioPlayer = new AudioPlayer();
     }
 
+    //初始化handler的处理逻辑
     public void initHandler() {
         mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
-                if (msg.what == 100) {
-                    dr.setVisibility(View.VISIBLE);
-                    dy.setVisibility(View.INVISIBLE);
-                    int[] dec = (int[]) msg.obj;
-                    Toast.makeText(getApplicationContext(), "Success!当前距离为" + dec[2], Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(), "警告！当前距离小于8米！", Toast.LENGTH_SHORT).show();
-                } else if (msg.what == 101) {
-                    dy.setVisibility(View.INVISIBLE);
-                } else if (msg.what == 102) {
-                    dy.setVisibility(View.VISIBLE);
-                    dr.setVisibility(View.INVISIBLE);
-                    int[] dec = (int[]) msg.obj;
-                    Toast.makeText(getApplicationContext(), "Success!当前距离为" + dec[2], Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(), "警告！当前距离小于16米！", Toast.LENGTH_SHORT).show();
-                } else if (msg.what == 103) {
-                    dr.setVisibility(View.INVISIBLE);
-                } else if (msg.what == 104) {
-                    dr.setVisibility(View.INVISIBLE);
-                    dy.setVisibility(View.INVISIBLE);
-                    int[] dec = (int[]) msg.obj;
-                    Toast.makeText(getApplicationContext(), "Success!当前距离为" + dec[2], Toast.LENGTH_SHORT).show();
-                } else if (msg.what == 200) {
+                if (msg.what == 200) {
                     initSt((String[]) msg.obj);
                 } else if (msg.what == 300) {
-                    AlarmPacket alarmPacket = (AlarmPacket) msg.obj;
-                    analysisUwbAlarm(alarmPacket);
+                    if (msg.obj instanceof AiAlarm) {
+                        AiAlarm aiAlarm = (AiAlarm) msg.obj;
+                        analysisAiAlarm(aiAlarm);
+                    } else {
+                        AlarmPacket alarmPacket = (AlarmPacket) msg.obj;
+                        analysisUwbAlarm(alarmPacket);
+                    }
                 }
                 if (caDialog != null)
                     caDialog.dismiss();
             }
         };
+    }
 
+    public void analysisAiAlarm(AiAlarm aiAlarm) {
+        ifShowUwbAlarmDialog(aiAlarm);
+    }
+
+    public void updateTimeSec() {
         // 每秒更新一次时间
         mHandler.post(new Runnable() {
             @Override
@@ -304,33 +385,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //解析Uwb的报警信息
     public void analysisUwbAlarm(AlarmPacket alarmPacket) {
-        if (alarmPacket.getALAMRIN() == 1) {
-            isAlarm.setImageResource(R.drawable.rd);
-            if (alarmDialog != null) {
-                alarmDialog.dismiss();
-                alarmDialog = new AlarmDialog(mcontext, alarmPacket.getTID(), alarmPacket.getRANGE());
-                alarmDialog.show();
-            } else {
-                alarmDialog = new AlarmDialog(mcontext, alarmPacket.getTID(), alarmPacket.getRANGE());
-                alarmDialog.show();
-            }
-        } else {
-            isAlarm.setImageResource(R.drawable.gr);
-        }
-
-        if (alarmPacket.getALARMR() == 1) {
-            isStop.setImageResource(R.drawable.rd);
-        } else {
-            isStop.setImageResource(R.drawable.gr);
-        }
-        /*
-         * 更新距离
-         * */
+        //判断是否弹出报警提示框
+        ifShowUwbAlarmDialog(alarmPacket);
+        //更新距离
         analysisJr(String.valueOf(alarmPacket.getTID()), alarmPacket.getRANGE());
-        /*
-         * 如果距离小于设定的报警距离则显示报警图标
-         * */
+        //如果当前UWB报警距离小于设定的范围则报警
         if (analysisDr(alarmPacket.getRANGE())) {
 
         } else {
@@ -338,17 +399,117 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void ifShowUwbAlarmDialog(AlarmPacket alarmPacket) {
+        //是否报警
+        isAlarm(alarmPacket);
+        //是否停机
+        isStop(alarmPacket);
+    }
+
+    public void ifShowUwbAlarmDialog(AiAlarm alarmPacket) {
+        //是否报警
+        isAlarm(alarmPacket);
+        //是否停机
+        isStop(alarmPacket);
+    }
+
+    public void isStop(AlarmPacket alarmPacket) {
+        if (alarmPacket.getALARMR() == 1) {
+            isStop.setImageResource(R.drawable.rd);
+        } else {
+            isStop.setImageResource(R.drawable.gr);
+        }
+    }
+
+    public void isStop(AiAlarm alarmPacket) {
+        if (alarmPacket.getAMARMR() == 1) {
+            isStop.setImageResource(R.drawable.rd);
+        } else {
+            isStop.setImageResource(R.drawable.gr);
+        }
+    }
+
+    public void isAlarm(AlarmPacket alarmPacket) {
+        if (alarmPacket.getALARMY() == 1 || alarmPacket.getALARMR() == 1) {
+            isAlarm.setImageResource(R.drawable.rd);
+            showAlarmDialog(alarmPacket);
+        } else {
+            isAlarm.setImageResource(R.drawable.gr);
+        }
+    }
+
+    public void isAlarm(AiAlarm alarmPacket) {
+        if (alarmPacket.getAMARMR() == 1 || alarmPacket.getAMARMY() == 1) {
+            isAlarm.setImageResource(R.drawable.rd);
+            showAlarmDialog(alarmPacket);
+        } else {
+            isAlarm.setImageResource(R.drawable.gr);
+        }
+    }
+
+
+    public void showAlarmDialog(AlarmPacket alarmPacket) {
+        if (alarmDialog != null) {
+            alarmDialog.dismiss();
+            alarmDialog = new AlarmDialog(mcontext, alarmPacket.getTID(), alarmPacket.getRANGE());
+            alarmDialog.show();
+        } else {
+            alarmDialog = new AlarmDialog(mcontext, alarmPacket.getTID(), alarmPacket.getRANGE());
+            alarmDialog.show();
+        }
+    }
+
+    public void showAlarmDialog(AiAlarm alarmPacket) {
+        if (alarmDialog != null) {
+            alarmDialog.dismiss();
+            alarmDialog = new AlarmDialog(mcontext, alarmPacket.getPerson_name(), alarmPacket.getRANGE());
+            alarmDialog.show();
+        } else {
+            alarmDialog = new AlarmDialog(mcontext, alarmPacket.getPerson_name(), alarmPacket.getRANGE());
+            alarmDialog.show();
+        }
+    }
+
     public void analysisJr(String id, int range) {
+        float r = Float.parseFloat(settings.getRed_r());
+        float y = Float.parseFloat(settings.getYellow_r());
         for (int i = 0; i < jtArray.length; i++) {
             if (jtArray[i].getText().equals(id)) {
                 if (i == 0) {
+                    if (range / 1000 < r) {
+                        jrArray[0].setTextColor(Color.RED);
+                        jsArray[0].setText("报警");
+                        jsArray[0].setTextColor(Color.RED);
+                    } else if (range / 1000 < y) {
+                        jrArray[0].setTextColor(Color.YELLOW);
+                        jsArray[0].setText("报警");
+                        jsArray[0].setTextColor(Color.YELLOW);
+                    }
                     jrArray[0].setText(range / 1000 + "米");
                 }
                 if (i == 1) {
+                    if (range / 1000 < r) {
+                        jrArray[1].setTextColor(Color.RED);
+                        jsArray[1].setText("报警");
+                        jsArray[1].setTextColor(Color.RED);
+                    } else if (range / 1000 < y) {
+                        jrArray[1].setTextColor(Color.YELLOW);
+                        jsArray[1].setText("报警");
+                        jsArray[1].setTextColor(Color.YELLOW);
+                    }
                     jrArray[1].setText(range / 1000 + "米");
                 }
                 if (i == 2) {
                     jrArray[2].setText(range / 1000 + "米");
+                    if (range / 1000 < r) {
+                        jsArray[2].setText("报警");
+                        jsArray[2].setTextColor(Color.RED);
+                        jrArray[2].setTextColor(Color.RED);
+                    } else if (range / 1000 < y) {
+                        jrArray[2].setTextColor(Color.YELLOW);
+                        jsArray[2].setText("报警");
+                        jsArray[2].setTextColor(Color.YELLOW);
+                    }
                 }
                 return;
             }
@@ -356,8 +517,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean analysisDr(int range) {
+        if (range == 0) {
+            return true;
+        }
         if (range / 1000 < Float.parseFloat(settings.getRed_r())) {
             dr.setVisibility(View.VISIBLE);
+            dr.startAnimation(blinkAnimation);
+//
             return true;
         } else {
             dr.setVisibility(View.INVISIBLE);
@@ -366,8 +532,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean analysisDy(int range) {
+        if (range == 0) {
+            return true;
+        }
         if (range / 1000 < Float.parseFloat(settings.getYellow_r())) {
             dy.setVisibility(View.VISIBLE);
+            dy.startAnimation(blinkAnimation);
+//            audioPlayer.play(mcontext, R.raw.bjq);
             return true;
         } else {
             dy.setVisibility(View.INVISIBLE);
@@ -400,21 +571,32 @@ public class MainActivity extends AppCompatActivity {
         initConfigData(args);
         initRTSP(args);
         initMqtt(args);
-        SharedPreferencesData.Settings settings = new SharedPreferencesData.Settings(args[9],
-                "",
-                args[0],
-                args[7],
-                args[8], DeviceIdExtractor.extractDeviceIds(args[6]), args[2], args[3], args[4]);
-        saveSettings(mcontext, settings);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferencesData.Settings settings = new SharedPreferencesData.Settings(args[9],
+                        "",
+                        args[0],
+                        args[1],
+                        args[7],
+                        args[8], DeviceIdExtractor.extractDeviceIds(args[6]), args[2], args[3], args[4]);
+                saveSettings(mcontext, settings);
+            }
+        }).start();
     }
 
     public void initConfigData(String[] args) {
-        ConfigData configData = new ConfigData(args[9], "", args[1], args[7], args[8], initBmd(args[6]));
-        Log.e(TAG, "initConfigData: " + configData.toJson());
-        Message message = new Message();
-        message.what = 100;
-        message.obj = configData.toJson();
-        MyMqtt.mqHandler.sendMessage(message);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ConfigData configData = new ConfigData(args[9], "", args[1], args[7], args[8], initBmd(args[6]));
+                Log.e(TAG, "initConfigData: " + configData.toJson());
+                Message message = new Message();
+                message.what = 100;
+                message.obj = configData.toJson();
+                MyMqtt.mqHandler.sendMessage(message);
+            }
+        }).start();
     }
 
     public void initHmd(String[] args) {
@@ -457,9 +639,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initRTSP(String[] args) {
-        if (args[0].equals("")) {
-            return;
-        }
         Log.e(TAG, "initRTSP: args: " + Arrays.toString(args));
         MediaSource mediaSource = new RtspMediaSource.Factory().createMediaSource(MediaItem.fromUri(args[0]));
         ExoPlayer player = new ExoPlayer.Builder(this).build();
@@ -476,6 +655,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initRTSP() {
+        rtspUrl = settings.getAi_camare_ip();
+        rtspUrl2 = settings.getCamare_ip();
         MediaSource mediaSource = new RtspMediaSource.Factory().createMediaSource(MediaItem.fromUri(rtspUrl));
         ExoPlayer player = new ExoPlayer.Builder(this).build();
         player.setMediaSource(mediaSource);
@@ -606,5 +787,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+    @Override
+    public void onUWBConnectChanged(boolean isUWBConnect) {
+        if (isUWBConnect) {
+            Toast.makeText(mcontext, "UWB数据服务已连接", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mcontext, "UWB数据服务断开", Toast.LENGTH_SHORT).show();
+        }
     }
 }

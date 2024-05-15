@@ -1,5 +1,6 @@
 package com.shsany.riskelectronicfence.mqtt;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -22,7 +23,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
  * 与UWB端及AI平台端进行数据通信
  * */
 public class MyMqtt {
-    private String uwbHost = "tcp://192.168.0.100:1883";
+    private String uwbHost = "tcp://192.168.0.105:1883";
     private String aiHost = "tcp://192.168.0.100:1883";
     private String userName = "admin";
     private String passWord = "123456";
@@ -36,10 +37,10 @@ public class MyMqtt {
     private MqttMessage message;
     public static Handler mqHandler;
 
-    public MyMqtt(String id, MqttCallback callback, boolean cleanSession) {
+    public MyMqtt(String id, MqttCallback callback, boolean cleanSession,String host) {
         try {
             //id应该保持唯一性
-            client = new MqttClient(uwbHost, id, new MemoryPersistence());
+            client = new MqttClient(host, id, new MemoryPersistence());
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(cleanSession);
             options.setUserName(userName);
@@ -128,16 +129,11 @@ public class MyMqtt {
     }
 
     public MyMqtt(String id, String[] args, MqttCallback callback, boolean cleanSession) {
-        if (args[2] == null || args[2].equals("")) {
-            return;
-        }
         try {
             //id应该保持唯一性
-            client = new MqttClient(args[2], id, new MemoryPersistence());
+            client = new MqttClient(args[9], id, new MemoryPersistence());
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(cleanSession);
-            options.setUserName(args[3]);
-            options.setPassword(args[4].toCharArray());
             options.setConnectionTimeout(10);
             options.setKeepAliveInterval(20);
             if (callback == null) {
@@ -180,19 +176,25 @@ public class MyMqtt {
     /*
      * 发送消息出去
      * */
-    public void sendUwbMessage(String topic, String msg) {
-        try {
-            message = new MqttMessage();
-            message.setQos(1);
-            message.setRetained(true);
-            message.setPayload(msg.getBytes());
-            mqttTopic = client.getTopic(topic);
-            MqttDeliveryToken token = mqttTopic.publish(message);//发布主题
-            token.waitForCompletion();
-        } catch (Exception e) {
-            Log.e("MainActivity_fence", "sendMessage: 发送失败");
-        }
+    public void sendUwbMessage(final String topic, final String msg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    message = new MqttMessage();
+                    message.setQos(1);
+                    message.setRetained(true);
+                    message.setPayload(msg.getBytes());
+                    mqttTopic = client.getTopic(topic);
+                    MqttDeliveryToken token = mqttTopic.publish(message);//发布主题
+                    token.waitForCompletion();
+                } catch (Exception e) {
+                    Log.e("MainActivity_fence", "sendMessage: 发送失败");
+                }
+            }
+        }).start();
     }
+
 
     public void sendAiMessage(String topic, String msg) {
         try {

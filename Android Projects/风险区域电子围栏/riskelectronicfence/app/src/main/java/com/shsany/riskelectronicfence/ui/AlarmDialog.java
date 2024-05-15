@@ -53,9 +53,53 @@ public class AlarmDialog extends Dialog {
         initAlarmText(id, range);
     }
 
+    public AlarmDialog(Context context, String name, int range) {
+        super(context);
+        setContentView(R.layout.dialog_alarm);
+
+        alarmText = findViewById(R.id.countdown);
+        countdownTextView = findViewById(R.id.countdown_text_view);
+        confirm = findViewById(R.id.confirm);
+        cancel = findViewById(R.id.cancel);
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        // 初始化倒计时器，设置总时间为15秒，间隔为1秒
+        countDownTimer = new CountDownTimer(60000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                // 在 TextView 中显示剩余时间
+                countdownTextView.setText(millisUntilFinished / 1000 + "请及时确认");
+            }
+
+            public void onFinish() {
+                // 倒计时结束后关闭 Dialog
+                dismiss();
+            }
+        };
+        initAlarmText(name, range);
+    }
+
     public void initAlarmText(int id, int range) {
         if (range > -1) {
             alarmText.setText("掘进机" + id + "发出报警\n当前距离为" + range / 1000 + "米");
+        }
+    }
+
+    public void initAlarmText(String name, int range) {
+        if (range > -1) {
+            alarmText.setText("人员" + name + "发出报警\n当前距离为" + range / 1000 + "米");
         }
     }
 
