@@ -4,7 +4,7 @@
 
 1.下载 [app.asar](https://github.com/Delppine1024/TGreen/releases)
 
-2.用下载的最新app.asar替换D:\目录\Typora\resources\app.asas
+2.用下载的最新app.asar替换D:\目录\Typora\resources\app.asar
 
 3.打开typora->帮助->我的许可证进行查看
 

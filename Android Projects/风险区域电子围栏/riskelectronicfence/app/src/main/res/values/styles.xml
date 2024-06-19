@@ -5,16 +5,33 @@
         <item name="android:textColor">#FFFFFF</item> <!-- 设置字体颜色为白色 -->
         <item name="android:textSize">14sp</item> <!-- 设置字体大小为 16sp -->
     </style>
-
+    <style name="InterfaceTextStyleSmall">
+        <item name="android:textStyle">bold|italic</item> <!-- 设置斜体和粗体 -->
+        <item name="android:textColor">#FFFFFF</item> <!-- 设置字体颜色为白色 -->
+        <item name="android:textSize">12sp</item> <!-- 设置字体大小为 16sp -->
+    </style>
     <style name="InterfaceTitleTextStyle">
         <item name="android:textStyle">bold|italic</item> <!-- 设置斜体和粗体 -->
         <item name="android:textColor">#35DCFE</item> <!-- 设置字体颜色为白色 -->
         <item name="android:textSize">16sp</item> <!-- 设置字体大小为 16sp -->
     </style>
 
+    <style name="InterfaceTitleTextStyleLoading">
+        <item name="android:textStyle">bold|italic</item> <!-- 设置斜体和粗体 -->
+        <item name="android:textColor">#FFFFFF</item> <!-- 设置字体颜色为白色 -->
+        <item name="android:textSize">16sp</item> <!-- 设置字体大小为 16sp -->
+        <item name="android:windowBackground">@drawable/bg</item>  <!-- 设置字体大小为 16sp -->
+    </style>
+
     <style name="InterfaceNomalTextStyle">
         <item name="android:textStyle">bold|italic</item> <!-- 设置斜体和粗体 -->
         <item name="android:textColor">#3FAC73</item> <!-- 设置字体颜色为白色 -->
+        <item name="android:textSize">16sp</item> <!-- 设置字体大小为 16sp -->
+    </style>
+
+    <style name="InterfaceAlarmTextStyle">
+        <item name="android:textStyle">bold|italic</item> <!-- 设置斜体和粗体 -->
+        <item name="android:textColor">#FF0000</item> <!-- 设置字体颜色为白色 -->
         <item name="android:textSize">16sp</item> <!-- 设置字体大小为 16sp -->
     </style>
 

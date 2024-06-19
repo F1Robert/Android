@@ -1,6 +1,5 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg">
@@ -44,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
-                    android:text="接口1"
+                    android:text="输入1"
                     android:textAppearance="@style/InterfaceTextStyle"
                     android:textColor="@color/white" />
 
@@ -66,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
-                    android:text="接口2"
+                    android:text="输入2"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <ImageView
@@ -91,9 +90,10 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <ImageView
+                    android:id="@+id/alarming"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/rd" />
+                    android:src="@drawable/gr" />
             </LinearLayout>
 
             <!-- 第四列 -->
@@ -112,13 +112,15 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <ImageView
+                    android:id="@+id/stop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/rd" />
+                    android:src="@drawable/gr" />
             </LinearLayout>
 
             <!-- 第五列 -->
             <TextView
+                android:id="@+id/wkMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/tb"
@@ -208,20 +210,23 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_ca_id0"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S51000"
+                    android:text="50396"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_rang_0"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="100米"
+                    android:text="68米"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_status_0"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -260,20 +265,23 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_ca_id1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S51000"
+                    android:text="501002"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_rang_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="100米"
+                    android:text="76米"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_status_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -312,20 +320,23 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_ca_id2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S51000"
+                    android:text="501003"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_rang_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="100米"
+                    android:text="58米"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_status_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -364,17 +375,18 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_ca_id3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S51000"
+                    android:text="501004"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="100米"
+                    android:text="93米"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
@@ -416,17 +428,18 @@
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
+                    android:id="@+id/j_ca_id4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S51000"
+                    android:text="501005"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="100米"
+                    android:text="62米"
                     android:textAppearance="@style/InterfaceTextStyle" />
 
                 <TextView
@@ -472,8 +485,8 @@
             android:layout_height="0dp"
             android:layout_marginBottom="24dp"
             android:layout_weight="1"
-            android:background="@drawable/hw"
-            />
+            android:background="@drawable/hw" />
+
     </LinearLayout>
 
 
@@ -484,7 +497,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="48dp"
         android:layout_marginTop="24dp"
-        android:text="XXXXXX煤矿"
+        android:text="长平煤矿"
         android:textColor="@color/white"
         android:textSize="24dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -575,7 +588,7 @@
         android:id="@+id/player1"
         android:layout_width="300dp"
         android:layout_height="130dp"
-        android:layout_marginTop="112dp"
+        android:layout_marginTop="103dp"
         android:layout_marginEnd="60dp"
         app:auto_show="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -588,7 +601,7 @@
         android:id="@+id/player2"
         android:layout_width="300dp"
         android:layout_height="130dp"
-        android:layout_marginTop="67dp"
+        android:layout_marginTop="58dp"
         app:layout_constraintStart_toStartOf="@id/player1"
         app:layout_constraintTop_toBottomOf="@id/player1"
         app:shutter_background_color="@color/whiteTrans" />
